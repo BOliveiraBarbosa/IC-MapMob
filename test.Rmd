@@ -1,0 +1,93 @@
+---
+title: "Busdata Cluster"
+runtime: shiny
+output: 
+  html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r}
+library(tidyverse)
+library(shiny)
+library(plotly)
+library(sf)
+library(DBI)
+library(stringr)
+```
+
+```{r}
+
+busdata_garagens_shape <- read_csv("garagensdata/garagens_shape.csv") |>
+  group_by(garagem)
+
+busdata_garagens_grandes <- read_csv("garagensdata/dados_cluster_filtrado.csv") |>
+  filter(id_agrupamento != 0) |> 
+  slice_sample(prop = 0.3, replace = FALSE)
+
+busdata_garagens_pequenas <- read_csv("garagensdata/dados_cluster_pequenos.csv") |>
+  filter(id_agrupamento != 0)
+
+fig <- plot_ly(type = "scattermapbox", mode = "markers") |>
+  add_trace(
+    data = busdata_garagens_shape,
+    lat = ~lat,
+    lon = ~long,
+    color = ~garagem,
+    opacity = 0.5,
+    mode = "markers+lines",
+    marker = list(color = "black"),
+    hoverinfo = "text",
+    text = ~paste(
+      "Lat:", lat,
+      "Long:" , long, "<br>",
+      "Agrupamento:", garagem
+    ),
+    name = "Garagens Shape"
+  ) |>
+  add_trace(
+    data = busdata_garagens_grandes,
+    lat = ~lat,
+    lon = ~long,
+    color = ~id_agrupamento,
+    opacity = 0.5,
+    marker = list(color = "darkorchid"),
+    hoverinfo = "text",
+    text = ~paste(
+      "Lat:", lat,
+      "Long:" , long, "<br>",
+      "Agrupamento:", id_agrupamento
+    ),
+    name = "Garagens Grandes"
+  ) |>
+  add_trace(
+    data = busdata_garagens_pequenas,
+    lat = ~lat,
+    lon = ~long,
+    color = ~id_agrupamento,
+    opacity = 0.5,
+    marker = list(color = "brown2"),
+    hoverinfo = "text",
+    text = ~paste(
+      "Lat:", lat,
+      "Long:" , long, "<br>",
+      "Agrupamento:", id_agrupamento
+    ),
+    name = "Garagens Pequenas"
+  ) |>
+  layout(
+    mapbox = list(
+      style = "open-street-map",
+      zoom = 9.5,
+      center = list(lat = -22.9, lon = -43.45)
+    )
+  ) %>% 
+  hide_colorbar() %>% 
+  suppressWarnings() # Remove Warnings 
+  
+fig
+
+
+```
