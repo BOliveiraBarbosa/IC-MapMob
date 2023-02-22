@@ -8,6 +8,7 @@ library(arrow)
 library(hms)
 library(tictoc)
 library(lubridate)
+library(plotly)
 
 diretorio_busdata <- "busdata"
 
@@ -35,13 +36,4 @@ dist <- min(dist[dist > 0])
 
 # Call Function ----------------------------------------------------------------
 
-cria_cenarios(df, dist, arquivo_dia = 1)
-
-# Test -------------------------------------------------------------------------
-
-conexao <- dbConnect(drv = RSQLite::SQLite(), "db/bus_parados.db")
-
-test <- tbl(conexao, "bus_regiao") |>
-  collect() |>
-  group_by(var_temp) |>
-  summarise(sum = sum(n))
+df_cenario <- cria_cenarios(df, dist)

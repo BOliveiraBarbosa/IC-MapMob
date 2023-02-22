@@ -1,0 +1,38 @@
+﻿fid,operador,endereco,bairro,globalid,shape__Area,shape__Length
+1,Rodoviária A. Matias,"Rua Doutor Bulhões, 766",Engenho de Dentro,487f632a-d751-4a99-ac5c-601aa4fc6c65,11857.5166015625,565.686810806406
+2,Expresso Recreio,"Estrada Rio do A, 1500",Campo Grande,5f4327ba-d756-4a1a-a30a-0824159b5e0d,49440.96484375,1075.24463709558
+3,BRT Rio,"Rua Barreiros, 21",Ramos,b4018fc5-f38b-42a4-8529-acf66618d842,12902.6435546875,475.996946279075
+4,Auto Viação Tijuca,"Estrada dos Bandeirantes, 5900",Curicica,6b164adc-07d5-48c7-85fc-5b75d2e320b4,32569.4697265625,907.98565415089
+5,Transportes Barra,"Rua General Canrobert Pereira da Costa, 536",Magalhães Bastos,c38355cb-e86e-443a-8938-053b67da2376,24602.0048828125,682.468413916588
+6,Viação Vila Real,"Rua Saravatá, 210",Marechal Hermes,0cec1713-13c8-421f-87b8-4a3a0e8fefa7,30811.953125,1018.7321329261
+7,Viação Novacap,"Avenida Jambeiro, 9",Marechal Hermes,3c036646-9683-49c5-8800-436e3e3e0ae3,4681.9677734375,310.060900364253
+8,GIRE Transportes,"Avenida Itaoca, 362",Bonsucesso,52a2f2fe-3033-4bc1-8337-de0e90b458bb,5862.2666015625,334.667387937344
+9,"Viação Nossa Senhora das Graças; Viação Verdun","Rua Leopoldo, 708",Andaraí,d1933499-3e59-4831-8063-1f1d2bf22c81,16761.634765625,721.958518779122
+10,Real Auto Ônibus,"Avenida Brasil, 4200",Maré,63444707-df53-442e-a13c-ac53cd3f9864,54025.9208984375,947.517567449144
+11,Viação Pavunense,"Avenida Chrisóstomo Pimentel de Oliveira, 699",Anchieta,09fba444-420b-4010-9412-7fe99811faef,18225.4599609375,875.913580565749
+12,"Expresso Pégaso; Auto Viação Palmares; BRT Rio","Avenida Cesário de Melo, 8121",Cosmos,5fea0bda-d41a-449d-8617-9c8aa44904d1,103868.670898438,1529.68907674883
+13,Viação Nossa Senhora de Lourdes,"Rua Capitão Vicente, 54",Penha Circular,2ff7f28b-d7b4-4287-8174-84a00885eeaa,8921.5283203125,547.133961121342
+14,Viação VG,"Rua Valentim Magalhães, 10",Vigário Geral,5a57ce00-fe71-4f40-b364-73debc860903,34310.4384765625,888.381941449075
+15,Viação Penha Rio,"Avenida Itaoca, 149/187",Bonsucesso,a08c074b-ef75-471b-b7f1-b00af995d7bb,5739.1171875,347.244290313425
+16,Viação Pavunense,"Avenida Chrisóstomo Pimentel de Oliveira, 1415",Pavuna,805fa47d-8ffe-4f7e-a332-037e0db14168,13697.67578125,496.189718447554
+17,Viação Ideal,"Avenida Coronel Luiz de Oliveira Sampaio, 180",Cacuia,91522abf-c41c-44be-adf5-057f4c98140c,18034.88671875,664.698232248386
+18,Transportes Paranapuan,"Estrada do Galeão, 178",Cacuia,39726afe-08bd-4440-afc2-e5f0c81e46fa,24257.08984375,697.195888503476
+19,Caprichosa Auto Ônibus,"Rua Bulhões Marcial, 361",Parada de Lucas,cbbc5b02-61c2-45f1-a71b-edd13d90989e,17823.673828125,674.576271728225
+20,Auto Viação Tijuca,"Rua Leopoldo, 610",Andaraí,c39f5045-ea73-4233-bf37-3cea61467475,14703.3310546875,678.19461663189
+21,Viação Novacap,"Estrada Intendente Magalhães, 1154",Marechal Hermes,e665e1b0-348d-4520-b6ab-2e0c9551b481,12683.822265625,447.169308797244
+22,Auto Viação Alpha,"Rua Condessa Belmonte, 445",Engenho Novo,dc37c8c3-fba9-4779-90b6-88816a6c16fa,13041.0078125,564.44423067195
+23,Real Auto Ônibus,"Rua Vinte e Nove de Julho, 357",Maré,d966faff-dd6b-4d09-95fe-f0ccb24712f5,14816.8349609375,500.713519123111
+24,Rodoviária A. Matias,"Rua Doutor Bulhões, 737",Engenho de Dentro,cf2c0fa5-cf8c-4d23-bc50-0ead0d901714,4348.466796875,265.054724125385
+25,Empresa de Transportes Braso Lisboa,"Avenida Pastor Martin Luther King Júnior, 3700",Inhaúma,608c9efb-7fab-4f97-bbe5-4e2c66f91ec8,46654.67578125,1101.94868081514
+26,Viação Acari,"Rua Miguel Rangel, 493",Madureira,1899a524-bcc6-4b75-bf2e-8a911d19a098,17628.322265625,527.072613247798
+27,Transportes Barra,"Estrada da Posse, 1670",Campo Grande,1929f6b1-74d5-44b6-9e71-328c4b6de386,13685.1083984375,574.674628181675
+28,Auto Viação Jabour,"Avenida Santa Cruz, 12375",Senador Vasconcelos,e943c8a4-dfb2-4f7c-b67a-4b4bdb244456,94896.2392578125,1423.32377862403
+29,Auto Viação Jabour,"Rua Viúva Dantas, 329",Campo Grande,8254eb2c-0376-4936-a4ae-c111fce9c7a3,3979.2626953125,346.157107864706
+30,"Viação Redentor; Transportes Futuro","Estrada do Gabinal, 1381/1395",Freguesia de Jacarepaguá,f91b830f-553d-4351-96b7-397cc0d4686b,104178.3984375,1660.73177657181
+31,BRT Rio,"Rua Leonardo Villas Boas, lotes 4, 5 e 6.",Jacarepaguá,7dba92d8-19fc-4aef-b7a5-f40d230d83da,18406.6142578125,567.780285592534
+32,Transportes Vila Isabel,"Rua Viana Drumond, 45",Vila Isabel,aa79d7e2-c9d6-47e2-9c29-60fa29ecb3ca,14783.6484375,692.504285691078
+33,Transurb,"Rua José dos Reis, 1136",Engenho de Dentro,c1f80529-2b9a-4c8d-a72e-94355601030c,53871.330078125,991.943251324665
+34,Transportes Campo Grande,"Avenida Santa Cruz, 7825",Senador Camará,6df829be-2110-4d4d-982b-9b2c4523f2cb,43366.984375,820.494131828617
+35,Viação Nossa Senhora de Lourdes,"Rua Salviano Valente, 85",Penha Circular,54fc8013-cf24-4ffd-b860-d649600b37b2,9588.6337890625,442.016670756274
+36,Auto Viação Três Amigos,"Rua Picuí, 505",Bento Ribeiro,b9e53ce0-894b-48b2-bf30-15febd4ed765,22359.3154296875,623.228085780315
+37,Transportes Barra,"Rua Anália Franco, 150",Vila Valqueire,305e5926-294a-41f4-8636-ba78efc91756,31116.9462890625,968.735513381013

@@ -1,0 +1,98 @@
+library(tidyverse)
+library(sf)
+
+df <- read_sf("garagensdata/garagens_polygon.csv")
+
+garagens <- tribble(
+  ~id_garagem, ~lat, ~long, ~nome_empresa, ~tipo, ~ativa,
+  
+  55, -22.83053, -43.32301, "Viacao Madureira Candelaria Ltda.", NA, 1,
+  55, -22.83053, -43.32442, "Viacao Madureira Candelaria Ltda.", NA, 1,
+  55, -22.83180, -43.32442, "Viacao Madureira Candelaria Ltda.", NA, 1,
+  55, -22.83180, -43.32301, "Viacao Madureira Candelaria Ltda.", NA, 1,
+  55, -22.83053, -43.32301, "Viacao Madureira Candelaria Ltda.", NA, 1,
+  
+  56, -22.91490, -43.25044, "Transporte Estrela Azul S/A", "G1", 1,
+  56, -22.91490, -43.25119, "Transporte Estrela Azul S/A", "G1", 1,
+  56, -22.91587, -43.25119, "Transporte Estrela Azul S/A", "G1", 1,
+  56, -22.91587, -43.25044, "Transporte Estrela Azul S/A", "G1", 1,
+  56, -22.91490, -43.25044, "Transporte Estrela Azul S/A", "G1", 1,
+
+  57, -22.79134, -43.29364, "Gire Transportes Ltda.", "G2", 1, 
+  57, -22.79134, -43.29630, "Gire Transportes Ltda.", "G2", 1, 
+  57, -22.79614, -43.29630, "Gire Transportes Ltda.", "G2", 1, 
+  57, -22.79614, -43.29364, "Gire Transportes Ltda.", "G2", 1, 
+  57, -22.79134, -43.29364, "Gire Transportes Ltda.", "G2", 1, 
+  
+  58, -22.79403, -43.41771, "Grupo Ponte Coberta", NA, NA, 
+  58, -22.79403, -43.41958, "Grupo Ponte Coberta", NA, NA, 
+  58, -22.79597, -43.41958, "Grupo Ponte Coberta", NA, NA, 
+  58, -22.79597, -43.41771, "Grupo Ponte Coberta", NA, NA, 
+  58, -22.79403, -43.41771, "Grupo Ponte Coberta", NA, NA, 
+  
+  59, -22.81383, -43.38217, "Viacao Pavunense S/A", "G4", 1,
+  59, -22.81383, -43.38283, "Viacao Pavunense S/A", "G4", 1,
+  59, -22.81452, -43.38283, "Viacao Pavunense S/A", "G4", 1,
+  59, -22.81452, -43.38217, "Viacao Pavunense S/A", "G4", 1,
+  59, -22.81383, -43.38217, "Viacao Pavunense S/A", "G4", 1,
+)
+
+df_garagens <- bind_rows(
+  df[[4]][[1]][[2]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 1, nome_empresa = "EXPRESSO RECREIO TRANSPORTE DE PASSAGEIROS LTDA", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[3]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 2, nome_empresa = "Auto Viação Tijuca", tipo = NA, ativa = 1),
+  df[[4]][[1]][[4]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 3, nome_empresa = "Transportes Futuro Ltda.", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[5]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 4, nome_empresa = "Transportes Vila Isabel S/A", tipo = NA, ativa = 1),
+  df[[4]][[1]][[6]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 5, nome_empresa = NA, tipo = NA, ativa = 0),
+  df[[4]][[1]][[7]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 6, nome_empresa = "Expresso Pegaso Ltda.", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[8]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 7, nome_empresa = "Auto Viacao Tijuca S/A", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[9]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 8, nome_empresa = "Auto Viacao Alpha S/A", tipo = NA, ativa = 1),
+  df[[4]][[1]][[10]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 9, nome_empresa = "Transporte Estrela Azul S/A", tipo= "G2", ativa = 1),
+  df[[4]][[1]][[11]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 10, nome_empresa = NA, tipo = NA, ativa = NA),
+  df[[4]][[1]][[12]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 11, nome_empresa = "Auto Viacao Jabour Ltda.", tipo = "G2", ativa = 1),
+  df[[4]][[1]][[13]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 12, nome_empresa = "Expresso Pegaso Ltda.", tipo = "G2", ativa = 1),
+  df[[4]][[1]][[14]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 13, nome_empresa = "Viacao Andorinha Ltda.", tipo = NA, ativa = 0),
+  df[[4]][[1]][[15]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 14, nome_empresa = "Auto Viacao Jabour Ltda.", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[16]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 15, nome_empresa = "Transurb S/A", tipo = NA, ativa = 1),
+  df[[4]][[1]][[17]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 16, nome_empresa = "Transportes Barra Ltda.", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[18]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 17, nome_empresa = "Transportes Campo Grande Ltda.", tipo = NA, ativa = 1),
+  df[[4]][[1]][[19]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 18, nome_empresa = "Transportes Barra Ltda.", tipo = "G3", ativa = 1),
+  df[[4]][[1]][[20]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 19, nome_empresa = "Transportes Sao Silvestre S/A", tipo = NA, ativa = 1),
+  df[[4]][[1]][[21]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 20, nome_empresa = "Viacao Verdun S/A", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[22]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 21, nome_empresa = "Rodoviaria A. Matias Ltda.", tipo = "G2", ativa = 1),
+  df[[4]][[1]][[23]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 22, nome_empresa = "Rodoviaria A. Matias Ltda.", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[24]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 23, nome_empresa = "Premium Auto Onibus Ltda", tipo = NA, ativa = 1),
+  df[[4]][[1]][[25]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 24, nome_empresa = "Viacao Vila Real S/A", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[26]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 25, nome_empresa = NA, tipo = NA, ativa = NA),
+  df[[4]][[1]][[27]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 26, nome_empresa = "Viacao Penha Rio Ltda.", tipo = NA, ativa = 1),
+  df[[4]][[1]][[28]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 27, nome_empresa = "Empresa de Transportes Braso Lisboa Ltda.", tipo = NA, ativa = 1),
+  df[[4]][[1]][[29]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 28, nome_empresa = "Gire Transportes Ltda.", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[30]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 29, nome_empresa = "Auto Viacao Tres Amigos S/A", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[31]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 30, nome_empresa = "Real Auto Onibus Ltda", tipo = NA, ativa = 1),
+  df[[4]][[1]][[32]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 31, nome_empresa = "Tel - Transportes Estrela S/A", tipo = NA, ativa = 1),
+  df[[4]][[1]][[33]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 32, nome_empresa = "Caprichosa Auto Onibus Ltda.", tipo = "G2", ativa = 1),
+  df[[4]][[1]][[34]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 33, nome_empresa = "Viacao Nossa Senhora de Lourdes S/A", tipo = NA, ativa = 1),
+  df[[4]][[1]][[35]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 34, nome_empresa = "Caprichosa Auto Onibus Ltda.", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[36]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 35, nome_empresa = "Empresa Viacao Ideal S/A", tipo = NA, ativa = 1),
+  df[[4]][[1]][[37]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 36, nome_empresa = "Transportes Paranapuan S/A", tipo = NA, ativa = 1),
+  df[[4]][[1]][[38]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 37, nome_empresa = "Viacao Vila Real S/A", tipo = "G2", ativa = 1),
+  df[[4]][[1]][[39]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 38, nome_empresa = "Viação Top Rio Ltda.", tipo = NA, ativa = 0),
+  df[[4]][[1]][[40]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 39, nome_empresa = "Viacao Rubanil Ltda.", tipo = NA, ativa = 1),
+  df[[4]][[1]][[41]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 40, nome_empresa = "VIAÇÃO VG EIRELI", tipo = NA, ativa = 1),
+  df[[4]][[1]][[42]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 41, nome_empresa = NA, tipo = NA, ativa = NA),
+  df[[4]][[1]][[43]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 42, nome_empresa = "Viacao Pavunense S/A", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[44]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 43, nome_empresa = "AUTO DIESEL", tipo = NA, ativa = 0),
+  df[[4]][[1]][[45]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 44, nome_empresa = "Viacao Novacap S/A", tipo = "G2", ativa = 1),
+  df[[4]][[1]][[46]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 45, nome_empresa = "Viacao Acari S/A", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[47]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 46, nome_empresa = "Viacao Novacap S/A", tipo = "G1", ativa = 1),
+  df[[4]][[1]][[48]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 47, nome_empresa = "Real Auto Onibus Ltda", tipo = NA, ativa = 1),
+  df[[4]][[1]][[49]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 48, nome_empresa = "Transportes Barra Ltda.", tipo = "G2", ativa = 1),
+  df[[4]][[1]][[50]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 49, nome_empresa = "Expresso Recreio", tipo = NA, ativa = 0),
+  df[[4]][[1]][[51]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 50, nome_empresa = "Viacao Normandy do Triangulo Ltda.", tipo = NA, ativa = 1),
+  df[[4]][[1]][[52]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 51, nome_empresa = "Viacao Redentor Ltda.", tipo = "G2", ativa = 1),
+  df[[4]][[1]][[53]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 52, nome_empresa = NA, tipo = NA, ativa = NA),
+  df[[4]][[1]][[54]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 53, nome_empresa = NA, tipo = NA, ativa = NA),
+  df[[4]][[1]][[55]] %>% as.data.frame() %>% select(lat = V2, long = V1) %>% mutate(id_garagem = 54, nome_empresa = "BRT Rio", tipo = "G2", ativa = 1),
+  garagens
+)
+
+write_csv(df_garagens, "garagens_shape.csv")

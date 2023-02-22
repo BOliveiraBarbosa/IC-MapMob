@@ -1,0 +1,124 @@
+---
+title: "MapMob"
+runtime: shiny
+output: 
+  html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+
+```
+
+```{r}
+
+library(tidyverse)
+library(shiny)
+library(plotly)
+library(DBI)
+library(stringr)
+
+```
+
+## Rio de Janeiro Shapes
+```{r, out.width="100%"}
+
+rj_shape <- read_csv("garagensdata/rj_shape.csv")
+
+rj_garagens_shape <- read_csv("garagensdata/garagens_shape.csv") %>% 
+  group_by(id_garagem)
+
+fig <- plot_ly(type = "scattermapbox", mode = "markers") |>
+  add_trace(
+    data = rj_shape,
+    lat = ~lat,
+    lon = ~long,
+    mode = "markers+lines",
+    marker = list(color = "black"),
+    line = list(color = "black"),
+    name = "Rio de Janeiro Shape"
+  ) |>
+  add_trace(
+    data = rj_garagens_shape,
+    lat = ~lat,
+    lon = ~long,
+    color = ~id_garagem,
+    mode = "markers+lines",
+    marker = list(colorscale = "Rainbow"),
+    line = list(color = "black"),
+    hoverinfo = "text",
+    text = ~paste(
+      "Lat:", lat,
+      "Long:" , long, "<br>",
+      "ID Garagem:", id_garagem
+    ),
+    name = "Garagens Shape"
+  ) |>
+  layout(
+    mapbox = list(
+      style = "open-street-map",
+      zoom = 9.2,
+      center = list(lat = -22.9, lon = -43.45)
+    )
+  ) %>% 
+  hide_colorbar() %>% 
+  suppressWarnings() # Remove Warnings 
+  
+fig
+
+```
+
+```{r, out.width="100%"}
+
+conexao <- dbConnect(drv = RSQLite::SQLite(), "db/busdata_class_id.db")
+
+df_cenario_group <- tbl(conexao, "busdata_class_id") |>
+  group_by(class_id, lat_mean, long_mean) |> 
+  summarise(qtd_pontos = n()) |>
+  collect()
+
+fig <- plot_ly(type = "scattermapbox", mode = "markers") |>
+  add_trace(
+    data = df_cenario_group,
+    lat = ~lat_mean,
+    lon = ~long_mean,
+    size = ~qtd_pontos,
+    color = ~class_id,
+    opacity = 0.7,
+    marker = list(colorscale = "Rainbow"),
+    hoverinfo = "text",
+    text = ~paste(
+      "Lat:", lat_mean,
+      "Long:" , long_mean, "<br>",
+      "ID:", class_id, "Qtd. Pontos:", qtd_pontos
+    )
+  ) |>
+  add_trace(
+    data = rj_garagens_shape,
+    lat = ~lat,
+    lon = ~long,
+    mode = "markers+lines",
+    marker = list(color = "black"),
+    line = list(color = "black"),
+    hoverinfo = "text",
+    text = ~paste(
+      "Lat:", lat,
+      "Long:" , long, "<br>",
+      "ID Garagem:", id_garagem
+    ),
+    name = "Garagens Shape"
+  ) |>
+  layout(
+    mapbox = list(
+      style = "open-street-map",
+      zoom = 9.2,
+      center = list(lat = -22.9, lon = -43.45)
+    )
+  ) |>
+  hide_colorbar() |>
+  suppressWarnings() # Remove Warnings
+
+fig
+
+```
