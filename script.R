@@ -1,39 +1,30 @@
 # Config/Setup -----------------------------------------------------------------
 
 library(tidyverse)
-library(unglue)
-library(janitor)
-library(DBI)
 library(arrow)
-library(hms)
-library(tictoc)
-library(lubridate)
-library(plotly)
-
-diretorio_busdata <- "busdata"
 
 source("R/cria_cenarios.R")
 
-# Read files -------------------------------------------------------------------
-
-df <- list.files(diretorio_busdata) |> 
-  enframe(value = "arquivo") |> 
-  rowwise() |> 
-  mutate(
-    conteudo = list(str_glue("{diretorio_busdata}/{arquivo}") |> read_parquet())
-  ) |> 
-  unnest(conteudo) |>
-  clean_names()
-
 # Calc dist --------------------------------------------------------------------
 
-dist <- c(
+# geosphere::distHaversine(c(-22.81653, -43.39437), c(-22.81653, -43.39887)) # 500m
+# geosphere::distHaversine(c(-22.81653, -43.39437), c(-22.82890, -43.39437)) # 1000
+
+dist_500 <- c(
   c(-22.81653, -43.39437) - c(-22.81653, -43.39887),
   c(-22.81653, -43.39437) - c(-22.82272, -43.39437)
 )
 
-dist <- min(dist[dist > 0])
+dist_500 <- min(dist_500[dist_500 > 0])
+
+dist_1000 <- c(
+  c(-22.81653, -43.39437) - c(-22.81653, -43.38538),
+  c(-22.81653, -43.39437) - c(-22.82890, -43.39437)
+)
+
+dist_1000 <- min(dist_1000[dist_1000 > 0])
 
 # Call Function ----------------------------------------------------------------
 
-df_cenario <- cria_cenarios(df, dist)
+df_cenario <- cria_cenarios(diretorio = "busdata", dist = dist_500, caminho_arquivos = "busdata_class/500m")
+df_cenario <- cria_cenarios(diretorio = "busdata", dist = dist_1000, caminho_arquivos = "busdata_class/1000m")

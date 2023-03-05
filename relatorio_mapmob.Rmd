@@ -13,11 +13,11 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 ```{r}
 
+library(shiny) 
 library(tidyverse)
-library(shiny)
+library(arrow)
 library(plotly)
-library(DBI)
-library(stringr)
+library(lubridate)
 
 ```
 
@@ -26,7 +26,7 @@ library(stringr)
 
 rj_shape <- read_csv("garagensdata/rj_shape.csv")
 
-rj_garagens_shape <- read_csv("garagensdata/garagens_shape.csv") %>% 
+rj_garagens_shape <- read_csv("garagensdata/garagens_shape.csv") |>
   group_by(id_garagem)
 
 fig <- plot_ly(type = "scattermapbox", mode = "markers") |>
@@ -61,64 +61,117 @@ fig <- plot_ly(type = "scattermapbox", mode = "markers") |>
       zoom = 9.2,
       center = list(lat = -22.9, lon = -43.45)
     )
-  ) %>% 
-  hide_colorbar() %>% 
+  ) |>
+  hide_colorbar() |>
   suppressWarnings() # Remove Warnings 
   
 fig
 
 ```
 
+
+```{r}
+
+inputPanel(
+  
+  numericInput(
+    inputId = "filtra_qtd_pontos", 
+    label = "Filtrar Qtd. Pontos", 
+    value = 1, 
+    min = 0
+  )
+)
+
+```
+
+
+
 ```{r, out.width="100%"}
 
-conexao <- dbConnect(drv = RSQLite::SQLite(), "db/busdata_class_id.db")
-
-df_cenario_group <- tbl(conexao, "busdata_class_id") |>
-  group_by(class_id, lat_mean, long_mean) |> 
-  summarise(qtd_pontos = n()) |>
-  collect()
-
-fig <- plot_ly(type = "scattermapbox", mode = "markers") |>
-  add_trace(
-    data = df_cenario_group,
-    lat = ~lat_mean,
-    lon = ~long_mean,
-    size = ~qtd_pontos,
-    color = ~class_id,
-    opacity = 0.7,
-    marker = list(colorscale = "Rainbow"),
-    hoverinfo = "text",
-    text = ~paste(
-      "Lat:", lat_mean,
-      "Long:" , long_mean, "<br>",
-      "ID:", class_id, "Qtd. Pontos:", qtd_pontos
+renderPlotly({
+  
+  df_cenario_group <- open_dataset("busdata_class/500m") |> 
+    mutate(DATE = mdy_hms(DATE)) |>
+    # filter(DATE >= ymd_hms(input$filtra_datetime_inicio) & DATE <= ymd_hms(input$filtra_datetime_fim)) |>
+    group_by(class_lat, class_long, lat_min, long_min, lat_max, long_max, lat_mean, long_mean) |>
+    summarise(qtd_pontos = n()) |>
+    ungroup() |>
+    collect() |>
+    group_by(class_lat, class_long) |>
+    mutate(class_id = cur_group_id()) |>
+    ungroup() |>
+    select(-c(class_lat, class_long)) |>
+    filter(qtd_pontos > input$filtra_qtd_pontos)
+    
+  df_cenario_pontos <- df_cenario_group |>
+    select(-c(lat_mean, long_mean)) |>
+    pivot_longer(cols = !c(class_id, qtd_pontos, lat_min, lat_max), names_to = "long_ref", values_to = "long_loc") |> 
+    pivot_longer(cols = !c(class_id, qtd_pontos, long_ref, long_loc), names_to = "lat_ref", values_to = "lat_loc") |>
+    mutate(
+      position = case_when(
+        long_ref == "long_min" & lat_ref == "lat_min" ~ 1,
+        long_ref == "long_min" & lat_ref == "lat_max" ~ 2,
+        long_ref == "long_max" & lat_ref == "lat_max" ~ 3,
+        long_ref == "long_max" & lat_ref == "lat_min" ~ 4,
+      )
     )
-  ) |>
-  add_trace(
-    data = rj_garagens_shape,
-    lat = ~lat,
-    lon = ~long,
-    mode = "markers+lines",
-    marker = list(color = "black"),
-    line = list(color = "black"),
-    hoverinfo = "text",
-    text = ~paste(
-      "Lat:", lat,
-      "Long:" , long, "<br>",
-      "ID Garagem:", id_garagem
-    ),
-    name = "Garagens Shape"
-  ) |>
-  layout(
-    mapbox = list(
-      style = "open-street-map",
-      zoom = 9.2,
-      center = list(lat = -22.9, lon = -43.45)
-    )
-  ) |>
-  hide_colorbar() |>
-  suppressWarnings() # Remove Warnings
-
-fig
+    
+  temp_termina_quad <- df_cenario_pontos |>
+    filter(position == 1) |>
+    mutate(position = 5)
+    
+  df_cenario_pontos <- df_cenario_pontos |>
+    bind_rows(temp_termina_quad) |> 
+    arrange(class_id, position) |>
+    group_by(class_id)
+    
+  fig <- plot_ly(type = "scattermapbox", mode = "markers") |>
+    add_trace(
+      data = df_cenario_pontos,
+      fill = "toself",
+      lat = ~lat_loc,
+      lon = ~long_loc,
+      color = ~qtd_pontos,
+      mode = "markers+lines",
+      marker = list(colorscale = "RdBu"),
+      line = list(color = "black"),
+      fillcolor = "color",
+      hoverinfo = "text",
+      text = ~paste(
+        "Lat:", lat_loc,
+        "Long:", long_loc
+      ),
+      name = "Quadrados"
+    ) |>
+    add_trace(
+      data = df_cenario_group,
+      lat = ~lat_mean,
+      lon = ~long_mean,
+      color = ~qtd_pontos,
+      size = ~qtd_pontos,
+      opacity = 0.5,
+      marker = list(colorscale = "RdBu"),
+      hoverinfo = "text",
+      text = ~paste(
+        "Lat:", lat_mean,
+        "Long:", long_mean, "<br>",
+        "ID Quadrado:", class_id,
+        "Qtd. Pontos:", qtd_pontos
+      ),
+      name = "Informações Quadrados"
+    ) |>
+    layout(
+      mapbox = list(
+        style = "open-street-map",
+        zoom = 9.2,
+        center = list(lat = -22.9, lon = -43.45)
+      )
+    ) |>
+    hide_colorbar() |>
+    suppressWarnings() # Remove Warnings
+    
+  fig
+  
+})
 
 ```
