@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 ```{r}
 
-library(shiny) 
+library(shiny)
 library(tidyverse)
 library(arrow)
 library(plotly)
@@ -69,7 +69,6 @@ fig
 
 ```
 
-
 ```{r}
 
 inputPanel(
@@ -77,22 +76,40 @@ inputPanel(
   numericInput(
     inputId = "filtra_qtd_pontos", 
     label = "Filtrar Qtd. Pontos", 
-    value = 1, 
+    value = 0, 
     min = 0
+  ),
+  
+  # sliderInput(
+  #   inputId = "filtra_hora",
+  #   label = "Filtra Intervalo de Hora",
+  #   min = lubridate::origin,
+  #   max = lubridate::origin + days(1) - seconds(1),
+  #   value = c(lubridate::origin, lubridate::origin + days(1) - seconds(1)),
+  #   step = 5 * 60,
+  #   timeFormat = "%H:%M",
+  #   timezone = "+0000",
+  #   ticks = FALSE
+  # ),
+
+  actionButton(
+    inputId = "filtrar", 
+    label = "Filtrar!"
   )
 )
 
 ```
 
-
-
 ```{r, out.width="100%"}
 
-renderPlotly({
+dados_filtrados <- eventReactive(eventExpr = input$filtrar, {
+  
+  # intervalo_min <- format(input$filtra_hora[1], "%H:%M")
+  # intervalo_max <- format(input$filtra_hora[2], "%H:%M")
   
   df_cenario_group <- open_dataset("busdata_class/500m") |> 
-    mutate(DATE = mdy_hms(DATE)) |>
-    # filter(DATE >= ymd_hms(input$filtra_datetime_inicio) & DATE <= ymd_hms(input$filtra_datetime_fim)) |>
+    # mutate(date_hm = format(mdy_hms(DATE), "%H:%M")) |>
+    # filter(date_hm >= intervalo_min & date_hm <= intervalo_max) |>
     group_by(class_lat, class_long, lat_min, long_min, lat_max, long_max, lat_mean, long_mean) |>
     summarise(qtd_pontos = n()) |>
     ungroup() |>
@@ -101,9 +118,15 @@ renderPlotly({
     mutate(class_id = cur_group_id()) |>
     ungroup() |>
     select(-c(class_lat, class_long)) |>
-    filter(qtd_pontos > input$filtra_qtd_pontos)
-    
-  df_cenario_pontos <- df_cenario_group |>
+    filter(qtd_pontos >= input$filtra_qtd_pontos)
+  
+   df_cenario_group
+  
+})
+
+renderPlotly({
+  
+  df_cenario_pontos <- dados_filtrados() |>
     select(-c(lat_mean, long_mean)) |>
     pivot_longer(cols = !c(class_id, qtd_pontos, lat_min, lat_max), names_to = "long_ref", values_to = "long_loc") |> 
     pivot_longer(cols = !c(class_id, qtd_pontos, long_ref, long_loc), names_to = "lat_ref", values_to = "lat_loc") |>
@@ -144,7 +167,7 @@ renderPlotly({
       name = "Quadrados"
     ) |>
     add_trace(
-      data = df_cenario_group,
+      data = dados_filtrados(),
       lat = ~lat_mean,
       lon = ~long_mean,
       color = ~qtd_pontos,
@@ -173,5 +196,36 @@ renderPlotly({
   fig
   
 })
+
+```
+
+# Histogramas
+```{r}
+
+df_cenario_group_500 <- open_dataset("busdata_class/500m") |> 
+    group_by(class_lat, class_long, lat_min, long_min, lat_max, long_max, lat_mean, long_mean) |>
+    summarise(qtd_pontos = n()) |>
+    ungroup() |>
+    collect()
+
+ggplot(df_cenario_group_500, aes(qtd_pontos)) + 
+  geom_histogram() + 
+  # scale_x_continuous(trans = "log10") + 
+  labs(title = "Quadrados de 500m")
+
+```
+
+```{r}
+
+df_cenario_group_1000 <- open_dataset("busdata_class/1000m") |> 
+    group_by(class_lat, class_long, lat_min, long_min, lat_max, long_max, lat_mean, long_mean) |>
+    summarise(qtd_pontos = n()) |>
+    ungroup() |>
+    collect()
+
+ggplot(df_cenario_group_1000, aes(qtd_pontos)) + 
+  geom_histogram() + 
+  # scale_x_continuous(trans = "log10") + 
+  labs(title = "Quadrados de 1000m")
 
 ```
